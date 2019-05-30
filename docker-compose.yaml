@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  frontend:
+    build: 
+      context: "./Front"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "3000:3000"
+
+  #mssql:
+  #  build: 
+  #    context: .
+  #    dockerfile: "./mssql-image"
+
+  #backend:
+  #  build: 
+  #    context: .
+  #    dockerfile: "./back-image"
+  #  ports:
+  #    - "5000:5000"
+
+  
+  

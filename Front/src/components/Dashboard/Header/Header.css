@@ -1,0 +1,35 @@
+.header-button-container {
+    top: 1.05rem;
+    position: absolute;
+}
+.header-button {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    border: 0;
+    border-radius: 5rem;
+    transition: background 0.2s ease;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.header-button-signout {
+    background: #3498db;
+    border-color: #2980b9;
+    color: white;
+}
+
+.header-button-signout:hover {
+    background: #2980b9;
+    transition: background 0.2s ease;
+}
+
+.header-button-adduser {
+    background: #2ecc71;
+    border-color: #27ae60;
+    color: white;
+}
+
+.header-button-adduser:hover {
+    background: #27ae60;
+    transition: background 0.2s ease;
+}

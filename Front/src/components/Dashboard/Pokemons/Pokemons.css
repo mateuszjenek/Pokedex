@@ -1,0 +1,30 @@
+.pokemons-button {
+    background: #3498db;
+    border-radius: 40px;
+    color: white;
+    border: 0;
+    transition: background 0.2s ease;    
+}
+
+.pokemons-button:hover {
+    background: #2980b9;
+    transition: background 0.2s ease;
+}
+
+.pokemons_name:hover {
+    text-decoration: underline;
+    transition: text-decoration 0.2s ease;
+}
+
+.pokemons_name {
+    transition: text-decoration 0.2s ease;
+    cursor: pointer;
+}
+
+.pokemons-button-delete {
+    background: #e74c3c;  
+}
+
+.pokemons-button-delete:hover {
+    background: #c0392b;
+}
