@@ -1,5 +1,9 @@
+import AuthService from "./AuthService";
+
 const DBService = {
-    _baseUrl: "http://www.mocky.io/v2/",
+    _baseUrl: "https://www.mocky.io/v2/",
+    _baseUrl2: "http://localhost:5002/",
+
     addUser(user){
         //fake
         return fetch(this._baseUrl + "5ccc69cf330000ae5ae01ca7?mocky-delay=1000ms").then(res => res.json())
@@ -38,9 +42,23 @@ const DBService = {
     },
 
     
-    getTrainerList() {
-        //fake
-        return fetch(this._baseUrl + "5cc6ec9b3200006700b94f93?mocky-delay=1000ms").then(res => res.json())
+    async getTrainerList() {
+        const response = await fetch(this._baseUrl2 + "trainers", {
+            method: "POST",
+            headers: {'Content-Type':'application/json'},
+            body: {
+                user: {
+                  username: AuthService.username,
+                  password: AuthService.passHash,
+                }
+            }
+        }).then(res => res.json()).then(res => {
+            console.log(res);
+        })
+
+        console.log(response)
+
+        return [{id: 1, name: "XD"}]
     },
     removeTrainer(id) {
         //fake

@@ -8,11 +8,12 @@ services:
       - "80:80"
       - "443:443"
       - "3000:3000"
+    volumes:
+      - "./Front/src:/src"
 
   mssql:
     build: 
       context: "./DB"
-
     tty: true
 
   backend:

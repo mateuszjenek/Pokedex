@@ -21,6 +21,8 @@ export default class Login extends Component {
 
     handleSubmit = function(event){
         event.preventDefault();
+        AuthService.username = this.state.username
+        AuthService.passHash = this.state.password
         AuthService.authenticate(() => {
             this.setState({ redirectRequest: true });
         })

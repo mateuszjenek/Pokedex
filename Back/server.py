@@ -4,7 +4,11 @@ from sqlalchemy import create_engine
 from flask_jsonpify import jsonify
 from sqlalchemy.exc import OperationalError
 
+from flask_cors import CORS
+import json
+
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 super_db_connect = create_engine('mssql+pymssql://SA:3SQ[4Je]5Gl@mssql:1433/PokeDB')
@@ -13,7 +17,7 @@ CONNECTION_WARNING = "Cannot connect to database with given credentials."
 
 def db_connection():
     # Pobranie danych użytkownika z żądania HTTP
-    user = request.get_json()["user"]
+    user = request.POST_json()["user"]
     connection_settings = F'mssql+pymssql://{user["username"]}:{user["password"]}@mssql:1433/PokeDB'
 
     # Utworzenie połączenia z bazą danych
@@ -24,7 +28,8 @@ def db_connection():
 @app.route('/login', methods=['POST'])
 def login():
     # Login użytkownika jest również kluczem głównym w tabeli trainers
-    username = request.get_json()["user"]['username']
+    return(jsonify(json.loads(request.data)))
+    username = request.POST_json()["user"]['username']
 
     # Weryfikacja użytkownika
     try:
@@ -45,8 +50,8 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     try:
-        user = request.get_json()["user"]
-        is_professor = request.get_json()["isProfessor"]
+        user = request.POST_json()["user"]
+        is_professor = request.POST_json()["isProfessor"]
         if is_professor is True:
             is_professor = 1
         else:
@@ -83,7 +88,7 @@ def register():
         return jsonify("Username already taken.")
 
 
-@app.route('/trainers', methods=['GET'])
+@app.route('/trainers', methods=['POST'])
 def trainers():
     # Weryfikacja użytkownika
     try:
@@ -95,7 +100,7 @@ def trainers():
         return jsonify(str(e))
 
 
-@app.route('/trainerspokemon/<string:trainer_id>', methods=['GET'])
+@app.route('/trainerspokemon/<string:trainer_id>', methods=['POST'])
 def trainerspokemon(trainer_id):
     # Weryfikacja użytkownika
     try:
@@ -107,7 +112,7 @@ def trainerspokemon(trainer_id):
         return jsonify(str(e))
 
 
-@app.route('/pokemons', methods=['GET'])
+@app.route('/pokemons', methods=['POST'])
 def pokemons():
     # Weryfikacja użytkownika
     try:
@@ -119,7 +124,7 @@ def pokemons():
         return jsonify(str(e))
 
 
-@app.route('/pokemon/<int:id>', methods=['GET'])
+@app.route('/pokemon/<int:id>', methods=['POST'])
 def pokemon(id):
     # Weryfikacja użytkownika
     try:
@@ -136,9 +141,9 @@ def newpokemon():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_name = request.get_json()["pokemon_name"]
-        pokemon_type = request.get_json()["pokemon_type"]
-        pokemon_id = request.get_json()["pokemon_id"]
+        pokemon_name = request.POST_json()["pokemon_name"]
+        pokemon_type = request.POST_json()["pokemon_type"]
+        pokemon_id = request.POST_json()["pokemon_id"]
         conn.execute(
             f"INSERT INTO pokemons(ID, name, type) VALUES ({pokemon_id}, '{pokemon_name}', '{pokemon_type}')")
         return jsonify("Pokemon successfully added.")
@@ -151,7 +156,7 @@ def deletepokemon():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_id = request.get_json()["pokemon_id"]
+        pokemon_id = request.POST_json()["pokemon_id"]
         conn.execute(
             f"DELETE FROM pokemons WHERE ID ={pokemon_id}")
         return jsonify("Pokemon successfully deleted.")
@@ -159,7 +164,7 @@ def deletepokemon():
         return jsonify(str(e))
 
 
-@app.route('/types', methods=['GET'])
+@app.route('/types', methods=['POST'])
 def types():
     # Weryfikacja użytkownika
     try:
@@ -177,7 +182,7 @@ def newtype():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        type_name = request.get_json()["type_name"]
+        type_name = request.POST_json()["type_name"]
 
         conn.execute(
             f"INSERT INTO types(name) VALUES ('{type_name}')")
@@ -191,7 +196,7 @@ def deletetype():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        type_name = request.get_json()["type_name"]
+        type_name = request.POST_json()["type_name"]
         conn.execute(
             f"DELETE FROM types WHERE name ='{type_name}'")
         return jsonify("Type successfully deleted.")
@@ -204,12 +209,12 @@ def partnership():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_id = request.get_json()["pokemon_id"]
-        trainer_id = request.get_json()["user"]["username"]
+        pokemon_id = request.POST_json()["pokemon_id"]
+        trainer_id = request.POST_json()["user"]["username"]
 
         conn.execute(
             f"INSERT INTO partnership(pokemon_ID, trainer_ID, catch_date)"
-            f" VALUES ({pokemon_id}, '{trainer_id}', GETDATE())")
+            f" VALUES ({pokemon_id}, '{trainer_id}', POSTDATE())")
         return jsonify("Partnership added successfully.")
     except Exception as e:
         return jsonify(str(e))
