@@ -2,9 +2,21 @@ import React from 'react'
 import Popup from "reactjs-popup"
 import PokeDetails from "./PokeDetails"
 import EditPoke from "./EditPoke"
+import AuthService from '../../../../services/AuthService'
 
 
 const PokeList = ({list, editPokeFun, removePokeFun}) => {
+
+    const EditButton = ({pokemon}) => {
+        return(
+            AuthService.role === "dr_oak_role" ? (
+                <Popup trigger={<button className="pokemons-button" style={{float: "right", fontSize: "0.9rem"}}>edytuj</button>} modal closeOnDocumentClick>
+                    { close => <EditPoke pokemon={pokemon} editPokeFun={editPokeFun} removePokeFun={removePokeFun} closeModalFun={close}/> }
+                </Popup>
+            ) : null
+        )
+    }
+
     const _list = list.length ? (
         list.map((pokemon) => {
             return(
@@ -13,9 +25,7 @@ const PokeList = ({list, editPokeFun, removePokeFun}) => {
                 <Popup trigger={(<span className="pokemons_name">{pokemon.name}</span>)} modal closeOnDocumentClick>
                     <PokeDetails pokemon={pokemon}/>
                 </Popup>
-                <Popup trigger={<button className="pokemons-button" style={{float: "right", fontSize: "0.8rem"}}>edytuj</button>} modal closeOnDocumentClick>
-                    { close => <EditPoke pokemon={pokemon} editPokeFun={editPokeFun} removePokeFun={removePokeFun} closeModalFun={close}/> }
-                </Popup>
+                <EditButton pokemon={pokemon}/>
                 
                 </div>
             )

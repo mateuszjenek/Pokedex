@@ -13,6 +13,10 @@ const PokeDetails = ({pokemon}) => {
                     <td>{pokemon.name}</td>
                     </tr>
                     <tr>
+                    <td>Type</td>
+                    <td>{pokemon.type}</td>
+                    </tr>
+                    <tr>
                     <td>Pokedex ID</td>
                     <td>{pokemon.id}</td>
                     </tr>

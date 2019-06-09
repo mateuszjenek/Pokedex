@@ -25,10 +25,7 @@ class AddUser extends Component {
             password: this.state.password,
             roles: this.state.roles
         }
-        DBService.addUser(user).then(res => {
-            if (res.message !== "OK")
-                alert(res.message)
-        })
+        DBService.addUser(user)
         this.props.closeModalFun()
     }
     render() {

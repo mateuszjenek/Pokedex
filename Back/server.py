@@ -17,7 +17,7 @@ CONNECTION_WARNING = "Cannot connect to database with given credentials."
 
 def db_connection():
     # Pobranie danych użytkownika z żądania HTTP
-    user = request.POST_json()["user"]
+    user = json.loads(request.data)["user"]
     connection_settings = F'mssql+pymssql://{user["username"]}:{user["password"]}@mssql:1433/PokeDB'
 
     # Utworzenie połączenia z bazą danych
@@ -28,8 +28,7 @@ def db_connection():
 @app.route('/login', methods=['POST'])
 def login():
     # Login użytkownika jest również kluczem głównym w tabeli trainers
-    return(jsonify(json.loads(request.data)))
-    username = request.POST_json()["user"]['username']
+    username = json.loads(request.data)["user"]['username']
 
     # Weryfikacja użytkownika
     try:
@@ -50,8 +49,8 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     try:
-        user = request.POST_json()["user"]
-        is_professor = request.POST_json()["isProfessor"]
+        user = json.loads(request.data)["user"]
+        is_professor = user["isProfessor"]
         if is_professor is True:
             is_professor = 1
         else:
@@ -105,7 +104,7 @@ def trainerspokemon(trainer_id):
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        query = conn.execute(f"select * from trainerspokemon where trainer_ID = '{trainer_id}' ")
+        query = conn.execute(f"select * from partnership where trainer_ID = '{trainer_id}' ")
         result = {'partnerships': [dict(zip(tuple(query.keys()), i)) for i in query.cursor]}
         return jsonify(result)
     except Exception as e:
@@ -141,9 +140,9 @@ def newpokemon():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_name = request.POST_json()["pokemon_name"]
-        pokemon_type = request.POST_json()["pokemon_type"]
-        pokemon_id = request.POST_json()["pokemon_id"]
+        pokemon_name = json.loads(request.data)["pokemon_name"]
+        pokemon_type = json.loads(request.data)["pokemon_type"]
+        pokemon_id = json.loads(request.data)["pokemon_id"]
         conn.execute(
             f"INSERT INTO pokemons(ID, name, type) VALUES ({pokemon_id}, '{pokemon_name}', '{pokemon_type}')")
         return jsonify("Pokemon successfully added.")
@@ -156,7 +155,7 @@ def deletepokemon():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_id = request.POST_json()["pokemon_id"]
+        pokemon_id = json.loads(request.data)["pokemon_id"]
         conn.execute(
             f"DELETE FROM pokemons WHERE ID ={pokemon_id}")
         return jsonify("Pokemon successfully deleted.")
@@ -182,7 +181,7 @@ def newtype():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        type_name = request.POST_json()["type_name"]
+        type_name = json.loads(request.data)["type_name"]
 
         conn.execute(
             f"INSERT INTO types(name) VALUES ('{type_name}')")
@@ -196,7 +195,7 @@ def deletetype():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        type_name = request.POST_json()["type_name"]
+        type_name = json.loads(request.data)["type_name"]
         conn.execute(
             f"DELETE FROM types WHERE name ='{type_name}'")
         return jsonify("Type successfully deleted.")
@@ -209,12 +208,12 @@ def partnership():
     # Weryfikacja użytkownika
     try:
         conn = db_connection()
-        pokemon_id = request.POST_json()["pokemon_id"]
-        trainer_id = request.POST_json()["user"]["username"]
+        pokemon_id = json.loads(request.data)["pokemon_id"]
+        trainer_id = json.loads(request.data)["user"]["username"]
 
         conn.execute(
             f"INSERT INTO partnership(pokemon_ID, trainer_ID, catch_date)"
-            f" VALUES ({pokemon_id}, '{trainer_id}', POSTDATE())")
+            f" VALUES ({pokemon_id}, '{trainer_id}', GETDATE())")
         return jsonify("Partnership added successfully.")
     except Exception as e:
         return jsonify(str(e))

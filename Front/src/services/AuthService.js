@@ -8,13 +8,8 @@ const AuthService = {
     role: ls.get("role") || "dr_oak_role",
 
     async authenticate(cb) {
-      console.log({
-        "user": {
-          "username": this.username,
-          "password": this.passHash
-        }
-      })
-      fetch(this._baseUrl+'/login', {
+      
+      const response = await fetch(this._baseUrl+'/login', {
         method: "POST",
         body: JSON.stringify({
           "user": {
@@ -23,25 +18,22 @@ const AuthService = {
           }
         }),
         headers: {'Content-Type':'application/json'},
-      }).then(res => console.log(res))
-      
-/*
-      if (request.status !== 200) {
-        const registerRequest = await fetch(this._baseUrl+'/register', {
-          method: "POST",
-          body: {
-            user: {
-              username: this.username,
-              password: this.passHash,
-              isProfessor: 1
-            }
-          },
-          headers: {'Content-Type':'application/json'},
-        })
+      }).then(res => res.json())
+
+      if (Array.isArray(response.result)) {
+        this.isAuthenticated = true;
+        this.role = response.result[0].isProfessor ? "dr_oak_role" : "regular_role"
+
+        ls.set("isAuthenticated", this.isAuthenticated)
+        ls.set("username", this.username)
+        ls.set("passHash", this.passHash)
+        ls.set("role", this.role)
+
+        cb();
       }
-*/
-      //this.isAuthenticated = true
-      //cb()
+      else {
+        alert(response)
+      }
     },
 
     signout(cb) {

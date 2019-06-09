@@ -1,5 +1,5 @@
 .trainers-button {
-    background: #3498db;
+    background: #f1c40f;
     border-radius: 40px;
     color: white;
     border: 0;
@@ -7,6 +7,19 @@
 }
 
 .trainers-button:hover {
+    background: #d3ab0e;
+    transition: background 0.2s ease;
+}
+
+.trainers-button-blue {
+    background: #3498db;
+    border-radius: 40px;
+    color: white;
+    border: 0;
+    transition: background 0.2s ease;    
+}
+
+.trainers-button-blue:hover {
     background: #2980b9;
     transition: background 0.2s ease;
 }

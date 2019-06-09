@@ -1,10 +1,27 @@
 import React from 'react'
 import Popup from "reactjs-popup"
 import TrainerDetails from "./TrainerDetails"
-import EditTrainer from "./EditTrainer"
+import AssignToTrener from "./AssignToTrener"
+import AuthService from "../../../../services/AuthService"
+
+/*<Popup trigger={<button className="trainers-button" style={{float: "right", fontSize: "0.8rem"}}>edytuj</button>} modal closeOnDocumentClick>
+{ close => <EditTrainer trainer={trainer} editTrainerFun={editTrainerFun} removeTrainerFun={removeTrainerFun} closeModalFun={close}/> }
+</Popup>*/
+
+const TrainerList = ({list, assignToTrenerFun}) => {
 
 
-const TrainerList = ({list, editTrainerFun, removeTrainerFun}) => {
+
+    const AssignPokeon = ({trainer}) => {
+        return(
+            AuthService.username === trainer.name ? (
+                <Popup trigger={<button className="trainers-button" style={{float: "right", fontSize: "0.9rem"}}>przypisz</button>} modal closeOnDocumentClick>
+                    { close => <AssignToTrener trainer={trainer} assignToTrenerFun={assignToTrenerFun} closeModalFun={close}/> }
+                </Popup>
+            ) : null
+        )
+    }
+
     const _list = list.length ? (
         list.map((trainer) => {
             return(
@@ -13,9 +30,8 @@ const TrainerList = ({list, editTrainerFun, removeTrainerFun}) => {
                 <Popup trigger={(<span className="trainers_name">{trainer.name}</span>)} modal closeOnDocumentClick>
                     <TrainerDetails trainer={trainer}/>
                 </Popup>
-                <Popup trigger={<button className="trainers-button" style={{float: "right", fontSize: "0.8rem"}}>edytuj</button>} modal closeOnDocumentClick>
-                    { close => <EditTrainer trainer={trainer} editTrainerFun={editTrainerFun} removeTrainerFun={removeTrainerFun} closeModalFun={close}/> }
-                </Popup>
+                <AssignPokeon trainer={trainer} />
+                
                 
                 </div>
             )
